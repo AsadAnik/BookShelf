@@ -43,6 +43,7 @@ app.get('/api/books', function(req, res){
 
 });
 
+
 // POST.
 app.post('/api/book', function(req, res){
     const book = new Book(req.body);
@@ -55,6 +56,46 @@ app.post('/api/book', function(req, res){
         });
     });
 });
+
+app.post('/api/register', function(req, res){
+    const user = new User(req.body);
+
+    user.save(function(err, doc){
+        if (err) return res.status(401).json({success: false, err});
+        res.status(201).json({
+            success: true,
+            user: doc
+        });
+    });
+});
+
+app.post('/api/login', function(req, res){
+    // Email compare is this our previous user here to login..
+    User.findOne({email: req.body.email}, function(err, user){
+        if (!user) return res.status(401).json({isAuth: false, message: 'Auth failed, wrong Email!'});
+        if (err) return res.status(400).send(err);
+
+        // Password compare with registered user when login this user..
+        user.comparePassword(req.body.password, function(err, isMatch){
+            if (!isMatch) return res.json({
+                isAuth: false,
+                message: 'Auth failed, wrong password!'
+            });
+            if (err) return res.send(err);
+
+            // Genarated User Token to Set Cookie..
+            user.genarateToken(function(err, user){
+                if (err) return res.status(400).send(err);
+                res.cookie('x-auth', user.token).json({
+                    isAuth: true,
+                    id: user._id,
+                    email: user.email
+                });
+            });
+        });
+    });
+});
+
 
 // UPDATE.
 app.post('/api/book_update', function(req, res){
@@ -78,11 +119,12 @@ app.post('/api/book_update', function(req, res){
     });
 });
 
+
 // DELETE.
 app.delete('/api/delete_book', function(req, res){
     let id = req.query.id;
 
-    Book.findByIdAndDelete(id, (err, doc) => {
+    Book.findByIdAndDelete(id, (err) => {
         if (err) return res.status(400).send(err);
         res.status(200).json(true);
     });
