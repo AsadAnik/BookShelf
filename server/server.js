@@ -7,7 +7,11 @@ const app = express();
 
 // Mongoose connect and promise...
 mongoose.Promise = global.Promise;
-mongoose.connect(config.DATABASE);
+mongoose.connect(config.DATABASE, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true
+});
 
 // Import Models..
 const { User } = require('./models/user');
@@ -36,11 +40,19 @@ app.get('/api/books', function(req, res){
     let order = req.query.order;
 
     // inner sort's ORDER = asc || desc ..
-    Book.find().skip(skip).sort({_id: order}).limit(limit).exec((err, doc) => {
+    Book.find().skip(skip).sort({_id: order}).limit(limit).exec((err, docs) => {
         if (err) return res.status(400).send(err);
-        res.status(200).send(doc);
+        res.status(200).send(docs);
     });
 
+});
+
+
+app.get('/api/user_posts', function(req, res){
+    Book.find({ownerId: req.query.user}).exec((err, docs) => {
+        if (err) return res.status(400).send(err);
+        res.status(200).send(docs);
+    });
 });
 
 
@@ -48,11 +60,11 @@ app.get('/api/books', function(req, res){
 app.post('/api/book', function(req, res){
     const book = new Book(req.body);
 
-    book.save(function(err, doc){
+    book.save(function(err, docs){
         if (err) return res.status(400).send(err);
         res.status(200).json({
             post: true,
-            bookId: doc._id
+            bookId: docs._id
         });
     });
 });
@@ -60,11 +72,11 @@ app.post('/api/book', function(req, res){
 app.post('/api/register', function(req, res){
     const user = new User(req.body);
 
-    user.save(function(err, doc){
+    user.save(function(err, docs){
         if (err) return res.status(401).json({success: false, err});
         res.status(201).json({
             success: true,
-            user: doc
+            user: docs
         });
     });
 });
@@ -109,10 +121,10 @@ app.post('/api/book_update', function(req, res){
     // });
 
     // Update with Promise..
-    Book.findByIdAndUpdate(req.body._id, req.body, {new: true}).then(doc => {
+    Book.findByIdAndUpdate(req.body._id, req.body, {new: true}).then(docs => {
         res.status(200).json({
             success: true,
-            doc
+            docs
         });
     }).catch(err => {
         res.status(400).send(err);
@@ -134,5 +146,5 @@ app.delete('/api/delete_book', function(req, res){
 // make port server connect..
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, function(){
-    console.log(`SERVER IS RUNNING`);
+    console.log(`SERVER IS RUNNING on http://localhost:${PORT}`);
 });
