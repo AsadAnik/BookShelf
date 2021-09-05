@@ -17,6 +17,9 @@ mongoose.connect(config.DATABASE, {
 const { User } = require('./models/user');
 const { Book } = require('./models/book');
 
+// Import Middleware..
+const { auth } = require('./middleware/auth');
+
 // Middleware using..
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -24,6 +27,7 @@ app.use(cookieParser());
 
 // making routes...
 // GET.
+// show_specific_book..
 app.get('/api/getBook', function(req, res){
     let id = req.query.id;
 
@@ -33,6 +37,7 @@ app.get('/api/getBook', function(req, res){
     });
 });
 
+// show_books..
 app.get('/api/books', function(req, res){
     // for this -> ( http://localhost:8080/api/book?skip=[Number]&limit=[Number]&order=[asc||desc] ).
     let skip = parseInt(req.query.skip);
@@ -47,7 +52,16 @@ app.get('/api/books', function(req, res){
 
 });
 
+// logout..
+app.get('/api/logout', auth, function(req, res){
+    req.user.deleteToken(req.token, function(err, user){
+        if (err) return res.status(400).send(err);
+        res.sendStatus(200);
+    });
+});
 
+
+// show_specific_users_post..
 app.get('/api/user_posts', function(req, res){
     Book.find({ownerId: req.query.user}).exec((err, docs) => {
         if (err) return res.status(400).send(err);
@@ -55,8 +69,19 @@ app.get('/api/user_posts', function(req, res){
     });
 });
 
+// user_show (profile)..
+app.get('/api/auth', auth, function(req, res){
+    res.status(200).json({
+        isAuth: true,
+        id: req.user._id,
+        email: req.user.email,
+        name: req.user.name,
+        lastname: req.user.lastname
+    });
+});
 
 // POST.
+// add_book..
 app.post('/api/book', function(req, res){
     const book = new Book(req.body);
 
@@ -69,6 +94,7 @@ app.post('/api/book', function(req, res){
     });
 });
 
+// register..
 app.post('/api/register', function(req, res){
     const user = new User(req.body);
 
@@ -81,6 +107,7 @@ app.post('/api/register', function(req, res){
     });
 });
 
+// login..
 app.post('/api/login', function(req, res){
     // Email compare is this our previous user here to login..
     User.findOne({email: req.body.email}, function(err, user){
@@ -98,7 +125,7 @@ app.post('/api/login', function(req, res){
             // Genarated User Token to Set Cookie..
             user.genarateToken(function(err, user){
                 if (err) return res.status(400).send(err);
-                res.cookie('x-auth', user.token).json({
+                res.cookie('auth', user.token).json({
                     isAuth: true,
                     id: user._id,
                     email: user.email
@@ -110,6 +137,7 @@ app.post('/api/login', function(req, res){
 
 
 // UPDATE.
+// update_book..
 app.post('/api/book_update', function(req, res){
     // Update without Promise..
     // Book.findByIdAndUpdate(req.body._id, req.body, {new: true}, (err, doc) => {
@@ -133,6 +161,7 @@ app.post('/api/book_update', function(req, res){
 
 
 // DELETE.
+// delete_book..
 app.delete('/api/delete_book', function(req, res){
     let id = req.query.id;
 

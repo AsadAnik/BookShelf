@@ -68,10 +68,33 @@ userSchema.methods.comparePassword = function(candidatePassword, cb){
 userSchema.methods.genarateToken = function(cb){
     var user = this;
     var token = jwt.sign(user._id.toHexString(), config.SECRET);
-
     user.token = token;
 
     user.save(function(err, user){
+        if (err) return cb(err);
+        cb(null, user);
+    });
+};
+
+// Verifying token to auth middleware..
+userSchema.statics.findByToken = function(token, cb){
+    var user = this;
+
+    jwt.verify(token, config.SECRET, function(err, decode){
+        if (err) return cb(err);
+
+        user.findOne({_id: decode, token: token}, function(err, user){
+            if (err) return cb(err);
+            cb(null, user);
+        });
+    });
+};
+
+// method to logout and this is remove the token..
+userSchema.methods.deleteToken = function(token, cb){
+    var user = this;
+
+    user.update({$unset: {token: 1}}, function(err, user){
         if (err) return cb(err);
         cb(null, user);
     });
