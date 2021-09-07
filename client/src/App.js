@@ -1,23 +1,24 @@
 import React from 'react';
-import axios from 'axios';
+import ReactDOM from 'react-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from "redux";
+import promiseMiddleware from 'redux-promise';
+import ReduxThunk from 'redux-thunk';
 
-function App() {
+import Routes from './routes';
+import Reducers from './reducers';
 
-    React.useEffect(() => {
-        axios.get("/api/getBook?id=612a091f03c12607c489f27c")
-            .then(res => {
-                console.log(res.data);
-            })
-            .catch(err => console.log(err.message));
-    }, []);
 
-    console.log('Hello world');
+const cereateStoreWithMiddleware = applyMiddleware(promiseMiddleware, ReduxThunk)(createStore);
 
-  return (
-      <React.Fragment>
-        <h1>Hello React | Node World!</h1>
-      </React.Fragment>
-  );
-}
+
+const App = () => (
+    <Provider store={createStoreWithMiddleware(Reducers)}>
+        <Router>
+            <Routes />
+        </Router>
+    </Provider>
+);
 
 export default App;
