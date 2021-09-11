@@ -80,6 +80,21 @@ app.get('/api/auth', auth, function(req, res){
     });
 });
 
+// post reviewer from user find with books ownerId...
+app.get('/api/getReviewer', function(req, res){
+    User.find({_id: req.query.ownerId}).then(docs => {
+        res.status(200).json({
+            firstname: docs[0].name,
+            lastname: docs[0].lastname
+        });
+
+    }).catch(err => {
+        if (err) return res.status(400).send(err);
+    });
+});
+
+
+
 // POST.
 // add_book..
 app.post('/api/book', function(req, res){
