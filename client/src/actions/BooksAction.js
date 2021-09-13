@@ -43,3 +43,14 @@ export function getBookWithReviewer(id){
         });
     };
 }
+
+// to clear data when unmount from component..
+export function clearBookWithReviewer(){
+    return {
+        type: "CLEAR_BOOK_WITH_REVIEWER",
+        payload: {
+            book: {},
+            reviewer: {}
+        }
+    };
+}

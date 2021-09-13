@@ -1,13 +1,19 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import { getBooks } from './../actions';
+import { getBooks } from '../actions/BooksAction';
 import BookItem from '../widgetsUI/bookItem';
 
 class HomeContainer extends Component {
-    // Lifecycle method..
-    componentDidMount(){
+    // Constructor..
+    constructor(props) {
+        super(props);
         this.props.dispatch(getBooks(1, 0, 'desc'));
     }
+
+    // Lifecycle method..
+    // componentDidMount(){
+    //     this.props.dispatch(getBooks(1, 0, 'desc'));
+    // }
 
     // showing list..
     showBooks = (Books) => {
