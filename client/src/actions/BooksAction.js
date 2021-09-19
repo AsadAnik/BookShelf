@@ -54,3 +54,24 @@ export function clearBookWithReviewer(){
         }
     };
 }
+
+
+// Add Book Reviewer..
+export function addBook(Book){
+    const request = axios.post(`/api/book`, Book)
+        .then(response => response.data)
+        .catch(error => error.message);
+
+    return {
+        type: "ADD_BOOK",
+        payload: request
+    };
+}
+
+// Clear BookList after submit..
+export function clearBookList(){
+    return {
+        type: "CLEAR_BOOK_LIST",
+        payload: {}
+    };
+}

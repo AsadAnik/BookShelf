@@ -126,7 +126,7 @@ app.post('/api/register', function(req, res){
 app.post('/api/login', function(req, res){
     // Email compare is this our previous user here to login..
     User.findOne({email: req.body.email}, function(err, user){
-        if (!user) return res.status(401).json({isAuth: false, message: 'Auth failed, wrong Email!'});
+        if (!user) return res.json({isAuth: false, message: 'Auth failed, wrong Email!'});
         if (err) return res.status(400).send(err);
 
         // Password compare with registered user when login this user..
