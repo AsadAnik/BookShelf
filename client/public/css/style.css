@@ -176,6 +176,7 @@ header .navItem span {
     border: none;
     margin-top: 20px;
     width: 260px;
+    cursor: pointer;
 }
 .rl_container.article button {
     width: 80%;
@@ -201,6 +202,7 @@ header .navItem span {
 .rl_container .delete_post {
     text-align: center;
     margin-top: 20px;
+    cursor: pointer;
 }
 
 .rl_container .delete_post .button {

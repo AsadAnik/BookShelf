@@ -21,8 +21,8 @@ const SidenavItem = () => {
         {
             type: 'navItem',
             icon: 'address-card',
-            text: 'Add Admins',
-            link: '/user/register',
+            text: 'Register',
+            link: '/register',
             restricted: false
         },
         {
@@ -50,7 +50,7 @@ const SidenavItem = () => {
             type: 'navItem',
             icon: 'sign-out',
             text: 'Logout',
-            link: '/user/logout',
+            link: '/logout',
             restricted: false
         }
     ];

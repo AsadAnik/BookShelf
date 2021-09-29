@@ -5,7 +5,7 @@ import moment from 'moment-js';
 import { Link } from 'react-router-dom';
 
 // Component..
-class UserPosts extends Component {
+class UserReview extends Component {
     // Constructor method..
     constructor(props) {
         super(props);
@@ -18,7 +18,7 @@ class UserPosts extends Component {
             User.userBooks.map(item => (
                 <tr key={item._id}>
                     <td>
-                        <Link to={`user/edit-post/${item._id}`}>{item.name}</Link>
+                        <Link to={`/user/edit-review/${item._id}`}>{item.name}</Link>
                     </td>
                     <td>{item.author}</td>
                     <td>{moment(item.createdAt).format('DD/MM/YYYY')}</td>
@@ -60,4 +60,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps)(UserPosts);
+export default connect(mapStateToProps)(UserReview);

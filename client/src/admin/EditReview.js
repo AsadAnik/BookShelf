@@ -1,8 +1,10 @@
-import React, {Component} from 'react';
-import {addBook, clearBookList} from "../actions/BooksAction";
-import {Link} from "react-router-dom";
+import React, {PureComponent} from 'react';
+import { getBook ,updateBook, clearBook, deleteBook } from "../actions/BooksAction";
+import { connect } from 'react-redux';
+import { Link } from "react-router-dom";
 
-class EditReview extends Component {
+// Component..
+class EditReview extends PureComponent {
     // Constructor..
     constructor(props) {
         super(props);
@@ -10,7 +12,7 @@ class EditReview extends Component {
         // state..
         this.state = {
             formData: {
-                id: this.props.match.params.id,
+                _id: this.props.match.params.id,
                 name: '',
                 author: '',
                 review: '',
@@ -19,11 +21,32 @@ class EditReview extends Component {
                 price: '',
             }
         };
+        // dispatching an action..
+        this.props.dispatch(getBook(this.props.match.params.id));
     }
 
     // after components unmount..
     componentWillUnmount() {
-        this.props.dispatch(clearBookList());
+        this.props.dispatch(clearBook());
+    }
+
+    // fill the state from next props of component..
+    componentWillReceiveProps(nextProps) {
+        const Book = nextProps.Books.book;
+
+        if (Book){
+            this.setState({
+                formData: {
+                    _id: Book._id,
+                    name: Book.name,
+                    author: Book.author,
+                    review: Book.review,
+                    pages: Book.pages,
+                    rating: Book.rating,
+                    price: Book.price,
+                }
+            });
+        }
     }
 
     // input change handler method..
@@ -39,16 +62,61 @@ class EditReview extends Component {
         });
     }
 
+    // redirecting user after delete..
+    redirectUser = () => {
+        setTimeout(() => {
+            this.props.history.push(`/user/user-reviews`);
+        }, 1000);
+    };
+
+    // delete button clicked here..
+    deleteReview = () => {
+        console.log('clicked to delete');
+        this.props.dispatch(deleteBook(this.state.formData._id));
+    };
+
+    // Delete Book Msg showing..
+    bookDeleteMsg = (Book) => {
+        return Book.deleteBook ? (
+            <div className={'red_tag'}>
+                Post Deleted!
+                {this.redirectUser()}
+            </div>
+        ) :
+            null;
+    };
+
+    // Update Book Msg showing..
+    bookUpdateMsg = (Book) => {
+        return Book.updateBook ? (
+            <div className={'edit_confirm'}>
+                Post updated, <Link to={`/book/${Book.book._id}`}>See your update!</Link>
+            </div>
+        ) :
+            null;
+    };
+
     // form submit returns with an object..
     submitForm = (event) => {
         event.preventDefault();
+        this.props.dispatch(updateBook(this.state.formData));
     };
 
+    // the rendering method..
     render() {
+        // Took book from Books object..
+        const { Books } = this.props;
+
         return (
             <div className="rl_container article">
+                {/*--- Book Update Message ---*/}
+                {this.bookUpdateMsg(Books)}
+
+                {/*--- Book Delete Message ---*/}
+                {this.bookDeleteMsg(Books)}
+
                 <form action="" onSubmit={this.submitForm}>
-                    <h2>Add a review</h2>
+                    <h2>Edit a review</h2>
 
                     <div className="form_element">
                         <input
@@ -105,14 +173,24 @@ class EditReview extends Component {
                         />
                     </div>
 
-                    <button type={'submit'}>Add Review</button>
+                    {/*---- Edit Review Button -----*/}
+                    <button type={'submit'}>Edit Review</button>
 
-                    {/*---- If added so show the book ----*/}
-                    { this.props.Books.newBook && this.showBook(this.props.Books.newBook) }
+                    {/*---- Delete Review Button ----*/}
+                    <div className="delete_post">
+                        <div className={'button'} onClick={this.deleteReview}>Delete Review</div>
+                    </div>
                 </form>
             </div>
         );
     }
 }
 
-export default EditReview;
+// mapStateToProps..
+const mapStateToProps = (state) => {
+    return {
+        Books: state.Books
+    };
+};
+
+export default connect(mapStateToProps)(EditReview);

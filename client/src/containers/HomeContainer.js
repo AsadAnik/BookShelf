@@ -19,7 +19,7 @@ class HomeContainer extends Component {
     showBooks = (Books) => {
             if (!Books.list){
                 return (
-                    <h1>Loading..</h1>
+                    <div className="loader">Loading...</div>
                 );
 
             }else{

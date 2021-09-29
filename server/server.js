@@ -52,6 +52,16 @@ app.get('/api/books', function(req, res){
 
 });
 
+
+// Show all users..
+app.get('/api/users', function(req, res){
+    User.find().exec((err, docs) => {
+        if (err) return res.status(400).send(err);
+        res.status(200).send(docs);
+    });
+});
+
+
 // logout..
 app.get('/api/logout', auth, function(req, res){
     req.user.deleteToken(req.token, function(err, user){
@@ -114,7 +124,7 @@ app.post('/api/register', function(req, res){
     const user = new User(req.body);
 
     user.save(function(err, docs){
-        if (err) return res.status(401).json({success: false, err});
+        if (err) return res.json({success: false, err});
         res.status(201).json({
             success: true,
             user: docs
@@ -155,11 +165,11 @@ app.post('/api/login', function(req, res){
 // update_book..
 app.post('/api/book_update', function(req, res){
     // Update without Promise..
-    // Book.findByIdAndUpdate(req.body._id, req.body, {new: true}, (err, doc) => {
+    // Book.findByIdAndUpdate(req.body._id, req.body, {new: true}, (err, docs) => {
     //     if (err) return res.status(400).send(err);
     //     res.status(200).json({
     //         success: true,
-    //         doc
+    //         docs
     //     });
     // });
 

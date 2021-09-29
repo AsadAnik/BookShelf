@@ -75,3 +75,53 @@ export function clearBookList(){
         payload: {}
     };
 }
+
+
+// Get Specific book for update/edit..
+export function getBook(id){
+    const request = axios.get(`/api/getBook?id=${id}`)
+        .then(response => response.data)
+        .catch(err => err.message);
+
+    return {
+        type: "GET_BOOK",
+        payload: request
+    };
+}
+
+// Update/Edit Book..
+export function updateBook(data){
+    const request = axios.post(`/api/book_update`, data)
+        .then(response => response.data)
+        .catch(err => err.message);
+
+    return {
+        type: "UPDATE_BOOK",
+        payload: request
+    };
+}
+
+
+// Delete/Remove Book..
+export function deleteBook(id){
+    const request = axios.delete(`/api/delete_book?id=${id}`)
+        .then(response => response.data)
+        .catch(err => err.message);
+
+    return {
+        type: "BOOK_DELETE",
+        payload: request
+    };
+}
+
+// Clear Edit-Book component after work..
+export function clearBook(){
+    return {
+        type: "CLEAR_BOOK",
+        payload: {
+            book: {},
+            updateBook: false,
+            deleteBook: false
+        }
+    };
+}

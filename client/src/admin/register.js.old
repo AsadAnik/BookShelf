@@ -1,0 +1,168 @@
+import React, { PureComponent} from 'react';
+import { connect } from "react-redux";
+import { getUsers, registerUser } from './../actions/UsersAction';
+
+
+// Component..
+class Register extends PureComponent {
+    // Constructor method..
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            name: '',
+            lastname: '',
+            email: '',
+            password: '',
+            error: ''
+        };
+
+        // action dispatched for get all registered users..
+        this.props.dispatch(getUsers());
+    }
+
+
+    // then props get update..
+    UNSAFE_componentWillReceiveProps(nextProps) {
+        // Code..
+        if (nextProps.User.register === false){
+            this.setState({error: 'Error, try again'});
+
+        }else{
+            this.setState({
+                name: '',
+                lastname: '',
+                email: '',
+                password: ''
+            });
+        }
+    }
+
+    // showing table loop with how many users..
+    tableBodyWithUsers = (Users) => {
+        if (Users.users){
+            return Users.users.map(user => (
+                <tr key={user._id}>
+                    <td>{user.name}</td>
+                    <td>{user.lastname}</td>
+                    <td>{user.email}</td>
+                </tr>
+            ));
+        }
+        return (
+            <tr>
+                <td><div className="loader">Loading...</div></td>
+                <td><div className="loader">Loading...</div></td>
+                <td><div className="loader">Loading...</div></td>
+            </tr>
+        );
+    };
+
+    // onChange method..
+    handleOnChange = (event, type) => {
+        const state = {...this.state};
+        const name = type.toLowerCase();
+
+        state[name] = event.target.value;
+
+        this.setState({
+            ...state,
+        });
+    };
+
+    // submit method..
+    handleSubmit = (event) => {
+        event.preventDefault();
+        this.setState({error: ''});
+
+        this.props.dispatch(registerUser({
+            name: this.state.name,
+            lastname: this.state.lastname,
+            email: this.state.email,
+            password: this.state.password,
+        }, this.props.Users.users));
+    };
+
+    // Rendering method..
+    render() {
+        return (
+            <div className={'rl_container'}>
+                {/*--- User Registering ---*/}
+                <form onSubmit={this.handleSubmit}>
+                    <h2>Register User</h2>
+
+                    <div className={'form_element'}>
+                        <input
+                            type="text"
+                            placeholder="Enter name"
+                            value={this.state.name}
+                            onChange={(e) => this.handleOnChange(e, "NAME")}
+                        />
+                    </div>
+
+                    <div className={'form_element'}>
+                        <input
+                            type="text"
+                            placeholder="Enter lastname"
+                            value={this.state.lastname}
+                            onChange={(e) => this.handleOnChange(e, "LASTNAME")}
+                        />
+                    </div>
+
+                    <div className={'form_element'}>
+                        <input
+                            type="email"
+                            placeholder="Enter email"
+                            value={this.state.email}
+                            onChange={(e) => this.handleOnChange(e, "EMAIL")}
+                        />
+                    </div>
+
+                    <div className={'form_element'}>
+                        <input
+                            type="password"
+                            placeholder="Enter password"
+                            value={this.state.password}
+                            onChange={(e) => this.handleOnChange(e, "PASSWORD")}
+                        />
+                    </div>
+
+                    <button type={'submit'}>Register!</button>
+
+                    {/*--- Error showing if exist ---*/}
+                    <div className="error">
+                        {this.state.error}
+                    </div>
+                </form>
+
+                {/*--- Showing the current users ---*/}
+                <div className="current_users">
+                    <h4>Current Users: </h4>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Lastname</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            { this.tableBodyWithUsers(this.props.Users) }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        );
+    }
+}
+
+// mapStateToProps..
+const mapStateToProps = (state) => {
+    return {
+        Users: state.Users
+    };
+};
+
+export default connect(mapStateToProps)(Register);

@@ -39,9 +39,7 @@ class AddReview extends Component {
     // input change handler method..
     handleOnChange = (event, type) => {
        const name = type.toLowerCase();
-       const newFormData = {
-           ...this.state.formData,
-       };
+       const newFormData = {...this.state.formData};
 
        newFormData[name] = event.target.value;
        this.setState({

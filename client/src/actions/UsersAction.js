@@ -34,3 +34,51 @@ export function userBooks(userId){
         payload: request
     };
 }
+
+// Showing all users..
+export function getUsers(){
+    const request = axios.get('/api/users')
+        .then(response => response.data)
+        .catch(err => err.message);
+
+    return {
+        type: "GET_USERS",
+        payload: request
+    };
+}
+
+// Register New User..
+export function registerUser(User, currentUsersList){
+    const request = axios.post('/api/register', User);
+
+    return (dispatch) => {
+        request.then(({data}) => {
+            const users = !data.success ? currentUsersList : [...currentUsersList, data.user];
+            let response = {
+                success: data.success,
+                users
+            };
+
+            dispatch({
+                type: "USER_REGISTER",
+                payload: response
+            });
+        });
+    };
+}
+
+
+// Logout User..
+export function logoutUser(props){
+    const request = axios.get('/api/logout')
+        .then(() => {
+            setTimeout(() => {
+                props.history.push('/');
+            }, 2000);
+        });
+
+    return {
+        type: "LOGOUT_USER",
+        payload: request
+    };
+}
