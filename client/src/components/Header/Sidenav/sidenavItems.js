@@ -70,7 +70,7 @@ const SidenavItem = ({User}) => {
 
     // Show list..
     const showItems = () => (
-        User.login ?
+        User.login &&
             items.map((item, i) => {
                 if (User.login.isAuth){
                     return !item.exclude && element(item, i);
@@ -78,11 +78,7 @@ const SidenavItem = ({User}) => {
                     return !item.restricted && element(item, i);
                 }
             })
-        :
-        null
     );
-
-    console.log('Props', User);
 
     // Returning statement..
     return (

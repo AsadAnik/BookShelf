@@ -7,7 +7,7 @@ class HomeContainer extends Component {
     // Constructor..
     constructor(props) {
         super(props);
-        this.props.dispatch(getBooks(1, 0, 'desc'));
+        this.props.dispatch(getBooks(5, 0, 'desc'));
     }
 
     // Lifecycle method..
@@ -34,7 +34,7 @@ class HomeContainer extends Component {
         let count = this.props.Books.list.length;
         let newList = this.props.Books.list;
 
-        this.props.dispatch(getBooks(1, count, 'desc', newList));
+        this.props.dispatch(getBooks(2, count, 'desc', newList));
     };
 
     // rendering method..
