@@ -1,8 +1,9 @@
 import React from 'react';
 import FontAwesome from 'react-fontawesome';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-const SidenavItem = () => {
+const SidenavItem = ({User}) => {
     const items = [
         {
             type: 'navItem',
@@ -16,42 +17,44 @@ const SidenavItem = () => {
             icon: 'user',
             text: 'My Profile',
             link: '/user',
-            restricted: false
+            restricted: true
         },
         {
             type: 'navItem',
             icon: 'address-card',
             text: 'Register',
             link: '/register',
-            restricted: false
+            restricted: false,
+            exclude: true
         },
         {
             type: 'navItem',
             icon: 'sign-in',
             text: 'Login',
             link: '/login',
-            restricted: false
+            restricted: false,
+            exclude: true
         },
         {
             type: 'navItem',
             icon: 'file-text',
             text: 'My Reviews',
             link: '/user/user-reviews',
-            restricted: false
+            restricted: true
         },
         {
             type: 'navItem',
             icon: 'file-text',
             text: 'Add Reviews',
             link: '/user/add-review',
-            restricted: false
+            restricted: true
         },
         {
             type: 'navItem',
             icon: 'sign-out',
             text: 'Logout',
             link: '/logout',
-            restricted: false
+            restricted: true
         }
     ];
 
@@ -67,10 +70,19 @@ const SidenavItem = () => {
 
     // Show list..
     const showItems = () => (
-        items.map((item, i) => {
-            return element(item, i);
-        })
+        User.login ?
+            items.map((item, i) => {
+                if (User.login.isAuth){
+                    return !item.exclude && element(item, i);
+                }else{
+                    return !item.restricted && element(item, i);
+                }
+            })
+        :
+        null
     );
+
+    console.log('Props', User);
 
     // Returning statement..
     return (
@@ -82,4 +94,11 @@ const SidenavItem = () => {
     );
 };
 
-export default SidenavItem;
+// mapStateToProps..
+const mapStateToProps = (state) => {
+    return {
+        User: state.Users
+    };
+};
+
+export default connect(mapStateToProps)(SidenavItem);
