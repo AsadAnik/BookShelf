@@ -39,20 +39,21 @@ const Register = (props) => {
 
     // data with the table body..
     const tableBodyWithUsers = (Users) => {
-        if (Users.users){
-            return Users.users.map(user => (
-                <tr key={user._id}>
-                    <td>{user.name}</td>
-                    <td>{user.lastname}</td>
-                    <td>{user.email}</td>
-                </tr>
-            ));
-        }
-        return (
+        return Users.users ? (
+           !Users.users === undefined ?  Users.users.map(user => (
+               <tr key={user._id}>
+                   <td>{user.name}</td>
+                   <td>{user.lastname}</td>
+                   <td>{user.email}</td>
+               </tr>
+           )) : (
+               <tr>
+                   <td colSpan={3} style={{textAlign: 'center', color: 'lightgray'}}>No Users Found!</td>
+               </tr>
+           )
+        ) : (
             <tr>
-                <td><div className="loader">Loading...</div></td>
-                <td><div className="loader">Loading...</div></td>
-                <td><div className="loader">Loading...</div></td>
+                <td colSpan={3}><div className="loader">Loading...</div></td>
             </tr>
         );
     };
@@ -156,7 +157,7 @@ const Register = (props) => {
             </div>
         </div>
     );
-};
+}
 
 // mapStateToProps..
 const mapStateToProps = (state) => {

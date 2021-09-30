@@ -23,9 +23,12 @@ class HomeContainer extends Component {
                 );
 
             }else{
-                return Books.list.map((item) => (
-                   <BookItem {...item} key={item._id} />
-                ));
+                if (!Books.list === undefined){
+                    return Books.list.map((item) => (
+                        <BookItem {...item} key={item._id} />
+                    ));
+                }
+                return <div><h2 style={{textAlign: 'center', color: 'lightgray'}}>No Reviews!</h2></div>;
             }
     };
 
