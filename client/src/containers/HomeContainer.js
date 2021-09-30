@@ -17,19 +17,26 @@ class HomeContainer extends Component {
 
     // showing list..
     showBooks = (Books) => {
-            if (!Books.list){
-                return (
-                    <div className="loader">Loading...</div>
-                );
+        // if there is undefined very first time..
+        if (typeof Books.list === 'undefined'){
+            return (
+                <div className="loader">Loading...</div>
+            );
+        }
 
-            }else{
-                if (!Books.list === undefined){
-                    return Books.list.map((item) => (
-                        <BookItem {...item} key={item._id} />
-                    ));
-                }
-                return <div><h2 style={{textAlign: 'center', color: 'lightgray'}}>No Reviews!</h2></div>;
-            }
+        // if the Books returns string with any error..
+        if (typeof Books.list === 'string'){
+            return (
+                <div>
+                    <h2 style={{textAlign: 'center', color: 'lightgray'}}>{Books.list}</h2>
+                </div>
+            );
+        }
+
+        // if there is Books list inner Object..
+        return Books.list && Books.list.map((item) => (
+            <BookItem {...item} key={item._id} />
+        ));
     };
 
     // Loading more data..

@@ -39,23 +39,34 @@ const Register = (props) => {
 
     // data with the table body..
     const tableBodyWithUsers = (Users) => {
-        return Users.users ? (
-           !Users.users === undefined ?  Users.users.map(user => (
-               <tr key={user._id}>
-                   <td>{user.name}</td>
-                   <td>{user.lastname}</td>
-                   <td>{user.email}</td>
-               </tr>
-           )) : (
-               <tr>
-                   <td colSpan={3} style={{textAlign: 'center', color: 'lightgray'}}>No Users Found!</td>
-               </tr>
-           )
-        ) : (
-            <tr>
-                <td colSpan={3}><div className="loader">Loading...</div></td>
+        // when it first comes with undefined type..
+        if (typeof Users.users === 'undefined'){
+            return (
+                <tr>
+                    <td colSpan={3}><div className="loader">Loading...</div></td>
+                </tr>
+            );
+        }
+
+        // if there is no Object but string with error message..
+        if (typeof Users.users === 'string'){
+            return (
+                <tr>
+                    <td colSpan={3} style={{textAlign: 'center', color: 'lightgray'}}>
+                        {Users.users}
+                    </td>
+                </tr>
+            );
+        }
+
+        // if Users object exist..
+        return Users.users && Users.users.map(user => (
+            <tr key={user._id}>
+                <td>{user.name}</td>
+                <td>{user.lastname}</td>
+                <td>{user.email}</td>
             </tr>
-        );
+        ));
     };
 
 
