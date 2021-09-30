@@ -20,6 +20,10 @@ const { Book } = require('./models/book');
 // Import Middleware..
 const { auth } = require('./middleware/auth');
 
+
+// Production Middleware..
+app.use(express.static('client/build'));
+
 // Middleware using..
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -195,6 +199,15 @@ app.delete('/api/delete_book', function(req, res){
         res.status(200).json(true);
     });
 });
+
+
+// Production code..
+if (process.env.NODE_ENV === 'production') {
+    const path = require('path');
+    app.get('/*', function(req, res){
+        res.sendfile(path.resolve(__dirname, '../client', 'build', 'index.html'));
+    });
+}
 
 
 // make port server connect..
