@@ -212,6 +212,7 @@ if (process.env.NODE_ENV === 'production') {
 
 // make port server connect..
 const PORT = process.env.PORT || 8080;
+const HOST = process.env.HOST || 'localhost';
 app.listen(PORT, function(){
-    console.log(`SERVER IS RUNNING on http://localhost:${PORT}`);
+    console.log(`SERVER IS RUNNING on ${HOST}:${PORT}`);
 });
