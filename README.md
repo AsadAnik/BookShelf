@@ -34,6 +34,14 @@ This app can be deployed directly to heroku since there is a script defined in p
 
 In the project directory, you can run:
 
+Run Node & React with one command.
+
+### `npm run dev`
+
+Run React App Client.
+
+### `npm run client`
+
 ### `npm run-script dev`
 
 Runs both the client app and the server app in development mode.<br>
